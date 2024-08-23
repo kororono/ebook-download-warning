@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Download Warning</title>
     <style>
-        /* Styling for the page */
         body {
             background-color: black;
             color: white;
@@ -20,35 +19,31 @@
             max-width: 500px;
         }
         h1 {
-            color: red; /* Make the warning title stand out */
+            color: red;
         }
         p {
             margin: 10px 0;
         }
     </style>
     <script>
-        // Function to get the user's IP address and location details
         async function fetchIPandLocation() {
             try {
-                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipResponse = await fetch('https://api64.ipify.org?format=json');
                 const ipData = await ipResponse.json();
                 document.getElementById('user-ip').innerText = ipData.ip;
 
-                // Get location data based on IP
-                const locationResponse = await fetch(`http://ip-api.com/json/${ipData.ip}`);
+                const locationResponse = await fetch(`https://ipinfo.io/${ipData.ip}/json?token=<YOUR_TOKEN>`);
                 const locationData = await locationResponse.json();
 
-                if (locationData.status === "success") {
+                if (locationData) {
                     document.getElementById('location-info').innerHTML = `
                         City: ${locationData.city} <br>
-                        Region: ${locationData.regionName} <br>
+                        Region: ${locationData.region} <br>
                         Country: ${locationData.country} <br>
-                        Latitude: ${locationData.lat} <br>
-                        Longitude: ${locationData.lon} <br>
-                        ISP: ${locationData.isp}`;
+                        Latitude, Longitude: ${locationData.loc} <br>
+                        ISP: ${locationData.org}`;
                     
-                    // Check if the location is in Kenya
-                    const isInKenya = locationData.country === "Kenya";
+                    const isInKenya = locationData.country === "KE";
                     document.getElementById('vpn-info').innerText = isInKenya
                         ? "Your location is consistent with the expected region."
                         : "It appears you are not accessing from Kenya. This might indicate the use of a VPN.";
@@ -64,13 +59,11 @@
             }
         }
 
-        // Function to redirect to the actual download after displaying a warning
         function redirectToDownload() {
-            alert("Reminder: Your IP address has been recorded. Do not share this file or you will be disqualified.");
-            window.location.href = "https://example.com/your-download-link.pdf"; // Replace with your actual download link
+            alert("Warning: Your IP address has been recorded. Sharing this document will lead to disqualification. We have your contact details and will take action if rules are violated.");
+            window.location.href = "https://example.com/your-download-link.pdf";
         }
 
-        // Fetch IP and location on page load
         window.onload = fetchIPandLocation;
     </script>
 </head>
@@ -81,12 +74,8 @@
         <p>Your approximate location:</p>
         <p id="location-info">[Fetching Location...]</p>
         <p id="vpn-info">[Checking VPN...]</p>
+        <p><strong>Warning:</strong> Sharing this document will result in immediate disqualification. We have your email and phone number, and we will send you a message if you break the rules. We also know if you're using a VPN to hide your location. Don't risk it.</p>
     </div>
-    <p style="color: yellow; margin-top: 20px;">
-        This is a warning! Sharing this document will lead to immediate disqualification from the treasure hunt. 
-        We have your IP address, your location, and your contact details. If you break the rules, you will be 
-        disqualified, and you will receive an email or text notification. We know if you are using a VPN.
-    </p>
     <button onclick="redirectToDownload()">Continue to Download</button>
 </body>
 </html>
