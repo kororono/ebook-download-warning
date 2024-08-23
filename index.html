@@ -11,22 +11,13 @@
             color: white;
             text-align: center;
             font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
         }
-        .info-box, .warning-box {
+        .info-box {
             border: 2px solid white;
             padding: 20px;
             margin: 20px auto;
             width: 80%;
             max-width: 500px;
-        }
-        .warning-box {
-            border-color: red;
-            color: red;
         }
         h1 {
             color: red; /* Make the warning title stand out */
@@ -34,17 +25,10 @@
         p {
             margin: 10px 0;
         }
-        button {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 16px;
+        .warning-message {
+            color: red;
+            font-weight: bold;
             margin-top: 20px;
-        }
-        button:hover {
-            background-color: darkred;
         }
     </style>
     <script>
@@ -79,9 +63,9 @@
     <div class="info-box">
         <p id="user-ip">[Fetching IP...]</p>
     </div>
-    <div class="warning-box">
-        <p>Sharing this document will lead to immediate disqualification from the treasure hunt. We have your contact details and will notify you if you violate the rules. Do not share this file.</p>
-    </div>
+    <p class="warning-message">
+        Sharing this document will lead to immediate disqualification from the treasure hunt. We have your contact details and will notify you if you violate the rules. Do not share this file.
+    </p>
     <button onclick="redirectToDownload()">Continue to Download</button>
 </body>
 </html>
