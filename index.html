@@ -5,58 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Download Warning</title>
     <style>
-        /* Basic styles for the page */
+        /* Styling for the page */
         body {
             background-color: black;
             color: white;
             text-align: center;
             font-family: Arial, sans-serif;
         }
-        #map {
-            height: 300px;
-            width: 80%;
-            margin: auto;
+        .info-box {
             border: 2px solid white;
-            margin-top: 20px;
+            padding: 20px;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 500px;
+        }
+        h1 {
+            color: red; /* Make the warning title stand out */
+        }
+        p {
+            margin: 10px 0;
         }
     </style>
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <!-- Leaflet JavaScript -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        // Function to get the user's IP address and location
+        // Function to get the user's IP address and location details
         async function fetchIPandLocation() {
-            const ipResponse = await fetch('https://api.ipify.org?format=json');
-            const ipData = await ipResponse.json();
-            document.getElementById('user-ip').innerText = ipData.ip;
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                document.getElementById('user-ip').innerText = ipData.ip;
 
-            // Get location data based on IP
-            const locationResponse = await fetch(`http://ip-api.com/json/${ipData.ip}`);
-            const locationData = await locationResponse.json();
+                // Get location data based on IP
+                const locationResponse = await fetch(`http://ip-api.com/json/${ipData.ip}`);
+                const locationData = await locationResponse.json();
 
-            if (locationData.status === "success") {
-                document.getElementById('location-info').innerText = `${locationData.city}, ${locationData.regionName}, ${locationData.country}`;
-                // Initialize the map with location data
-                initMap(locationData.lat, locationData.lon);
-            } else {
+                if (locationData.status === "success") {
+                    document.getElementById('location-info').innerHTML = `
+                        City: ${locationData.city} <br>
+                        Region: ${locationData.regionName} <br>
+                        Country: ${locationData.country} <br>
+                        Latitude: ${locationData.lat} <br>
+                        Longitude: ${locationData.lon} <br>
+                        ISP: ${locationData.isp}`;
+                    
+                    // Check if the location is in Kenya
+                    const isInKenya = locationData.country === "Kenya";
+                    document.getElementById('vpn-info').innerText = isInKenya
+                        ? "Your location is consistent with the expected region."
+                        : "It appears you are not accessing from Kenya. This might indicate the use of a VPN.";
+
+                } else {
+                    document.getElementById('location-info').innerText = "Unable to determine location.";
+                    document.getElementById('vpn-info').innerText = "";
+                }
+            } catch (error) {
+                console.error('Error fetching IP or location:', error);
                 document.getElementById('location-info').innerText = "Unable to determine location.";
+                document.getElementById('vpn-info').innerText = "";
             }
-        }
-
-        // Function to initialize the Leaflet map
-        function initMap(latitude, longitude) {
-            const map = L.map('map').setView([latitude, longitude], 10); // Sets map to the location
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 18,
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
-            L.marker([latitude, longitude]).addTo(map).bindPopup('You are here.').openPopup();
         }
 
         // Function to redirect to the actual download after displaying a warning
         function redirectToDownload() {
-            alert("Your IP address has been recorded: " + document.getElementById('user-ip').innerText + ". Do not share this file.");
+            alert("Warning: Your IP address has been recorded: " + document.getElementById('user-ip').innerText + ". Sharing this document will lead to immediate disqualification from the treasure hunt. We have your contact details and will send you an email or text if you violate the rules. We know your location and have the means to enforce these consequences. Do not share this file.");
             window.location.href = "https://example.com/your-download-link.pdf"; // Replace with your actual download link
         }
 
@@ -66,9 +76,12 @@
 </head>
 <body>
     <h1>Warning!</h1>
-    <p>Your IP address <span id="user-ip">[Fetching IP...]</span> has been recorded.</p>
-    <p>Your approximate location is <span id="location-info">[Fetching Location...]</span></p>
-    <div id="map"></div>
+    <div class="info-box">
+        <p>Your IP address: <span id="user-ip">[Fetching IP...]</span></p>
+        <p>Your approximate location:</p>
+        <p id="location-info">[Fetching Location...]</p>
+        <p id="vpn-info">[Checking VPN...]</p>
+    </div>
     <button onclick="redirectToDownload()">Continue to Download</button>
 </body>
 </html>
