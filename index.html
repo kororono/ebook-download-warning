@@ -66,7 +66,7 @@
 
         // Function to redirect to the actual download after displaying a warning
         function redirectToDownload() {
-            alert("Warning: Your IP address has been recorded: " + document.getElementById('user-ip').innerText + ". Sharing this document will lead to immediate disqualification from the treasure hunt. We have your contact details and will send you an email or text if you violate the rules. We know your location and have the means to enforce these consequences. Do not share this file.");
+            alert("Reminder: Your IP address has been recorded. Do not share this file or you will be disqualified.");
             window.location.href = "https://example.com/your-download-link.pdf"; // Replace with your actual download link
         }
 
@@ -82,6 +82,11 @@
         <p id="location-info">[Fetching Location...]</p>
         <p id="vpn-info">[Checking VPN...]</p>
     </div>
+    <p style="color: yellow; margin-top: 20px;">
+        This is a warning! Sharing this document will lead to immediate disqualification from the treasure hunt. 
+        We have your IP address, your location, and your contact details. If you break the rules, you will be 
+        disqualified, and you will receive an email or text notification. We know if you are using a VPN.
+    </p>
     <button onclick="redirectToDownload()">Continue to Download</button>
 </body>
 </html>
