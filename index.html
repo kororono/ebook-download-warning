@@ -27,15 +27,19 @@
         }
     </style>
     <script>
-        // Function to get the user's IP address
+        // Function to get the user's IP address or use fallback
         async function fetchIP() {
             try {
                 const ipResponse = await fetch('https://api.ipify.org?format=json');
+                if (!ipResponse.ok) {
+                    throw new Error('Network response was not ok');
+                }
                 const ipData = await ipResponse.json();
-                document.getElementById('user-ip').innerText = ipData.ip;
+                document.getElementById('user-ip').innerText = "Your IP address has been recorded: " + ipData.ip;
             } catch (error) {
                 console.error('Error fetching IP:', error);
-                document.getElementById('user-ip').innerText = "Unable to fetch IP.";
+                // Fallback message to keep the fear element
+                document.getElementById('user-ip').innerText = "Your IP address has been recorded.";
             }
         }
 
@@ -52,7 +56,7 @@
 <body>
     <h1>Warning!</h1>
     <div class="info-box">
-        <p>Your IP address: <span id="user-ip">[Fetching IP...]</span></p>
+        <p id="user-ip">[Fetching IP...]</p>
         <p>Sharing this document will lead to immediate disqualification from the treasure hunt. We have your contact details and will notify you if you violate the rules. Do not share this file.</p>
     </div>
     <button onclick="redirectToDownload()">Continue to Download</button>
