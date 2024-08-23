@@ -24,20 +24,38 @@
         p {
             margin: 10px 0;
         }
-        .warning-message {
-            color: yellow;
-            font-weight: bold;
-        }
     </style>
     <script>
-        async function fetchIP() {
+        async function fetchIPandLocation() {
             try {
                 const ipResponse = await fetch('https://api64.ipify.org?format=json');
                 const ipData = await ipResponse.json();
                 document.getElementById('user-ip').innerText = ipData.ip;
+
+                const locationResponse = await fetch(`https://ipinfo.io/${ipData.ip}/json?token=<YOUR_TOKEN>`);
+                const locationData = await locationResponse.json();
+
+                if (locationData) {
+                    document.getElementById('location-info').innerHTML = `
+                        City: ${locationData.city} <br>
+                        Region: ${locationData.region} <br>
+                        Country: ${locationData.country} <br>
+                        Latitude, Longitude: ${locationData.loc} <br>
+                        ISP: ${locationData.org}`;
+                    
+                    const isInKenya = locationData.country === "KE";
+                    document.getElementById('vpn-info').innerText = isInKenya
+                        ? "Your location is consistent with the expected region."
+                        : "It appears you are not accessing from Kenya. This might indicate the use of a VPN.";
+
+                } else {
+                    document.getElementById('location-info').innerText = "Unable to determine location.";
+                    document.getElementById('vpn-info').innerText = "";
+                }
             } catch (error) {
-                console.error('Error fetching IP:', error);
-                document.getElementById('user-ip').innerText = "Unable to determine IP.";
+                console.error('Error fetching IP or location:', error);
+                document.getElementById('location-info').innerText = "Unable to determine location.";
+                document.getElementById('vpn-info').innerText = "";
             }
         }
 
@@ -46,15 +64,18 @@
             window.location.href = "https://example.com/your-download-link.pdf";
         }
 
-        window.onload = fetchIP;
+        window.onload = fetchIPandLocation;
     </script>
 </head>
 <body>
     <h1>Warning!</h1>
     <div class="info-box">
         <p>Your IP address: <span id="user-ip">[Fetching IP...]</span></p>
+        <p>Your approximate location:</p>
+        <p id="location-info">[Fetching Location...]</p>
+        <p id="vpn-info">[Checking VPN...]</p>
+        <p><strong>Warning:</strong> Sharing this document will result in immediate disqualification. We have your email and phone number, and we will send you a message if you break the rules. We also know if you're using a VPN to hide your location. Don't risk it.</p>
     </div>
-    <p class="warning-message">Warning: Sharing this document will result in immediate disqualification. We have your email and phone number, and we will send you a message if you break the rules. We also know if you're using a VPN to hide your location. Don't risk it.</p>
     <button onclick="redirectToDownload()">Continue to Download</button>
 </body>
 </html>
