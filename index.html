@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Warning</title>
+    <script>
+        // Function to get the user's IP address
+        async function fetchIP() {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            document.getElementById('user-ip').innerText = data.ip;
+        }
+
+        // Function to redirect to the actual download after displaying a warning
+        function redirectToDownload() {
+            alert("Your IP address has been recorded: " + document.getElementById('user-ip').innerText + ". Do not share this file.");
+            window.location.href = "https://example.com/your-download-link.pdf"; // Replace with your actual download link
+        }
+
+        // Fetch IP on page load
+        window.onload = fetchIP;
+    </script>
+</head>
+<body>
+    <h1>Warning!</h1>
+    <p>Your IP address <span id="user-ip">[Fetching IP...]</span> has been recorded. Sharing this document will lead to disqualification from the treasure hunt.</p>
+    <button onclick="redirectToDownload()">Continue to Download</button>
+</body>
+</html>
